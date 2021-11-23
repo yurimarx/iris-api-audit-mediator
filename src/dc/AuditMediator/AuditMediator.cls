@@ -1,4 +1,4 @@
-Class Sample.REST.Base Extends dc.AuditMediator.AuditMediator
+Class dc.AuditMediator.AuditMediator Extends %CSP.REST
 {
 
 Parameter CHARSET = "utf-8";
@@ -11,11 +11,13 @@ Parameter PAGESIZE As INTEGER = 20;
 
 ClassMethod OnPreDispatch(pUrl As %String, pMethod As %String, ByRef pContinue As %Boolean) As %Status
 {
-  Do ##super()
-  
+
   SET tSC = $$$OK
+  
   TRY {
     
+    Set tSC = $SYSTEM.Security.Audit("RESTAPI","Request", "RESTAPI","URL: "_pUrl_". Method: "_pMethod_".","REST API request")
+  
     // Set the return type according to the Accept type in the request. Default is application/json.
     IF ('..AcceptsContentType(..#CONTENTTYPEJSON)) {
       SET tSC = ..ReportHttpStatusCode(..#HTTP406NOTACCEPTABLE), pContinue=0
