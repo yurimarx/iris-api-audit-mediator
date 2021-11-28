@@ -17,41 +17,11 @@ ClassMethod OnPreDispatch(pUrl As %String, pMethod As %String, ByRef pContinue A
   TRY {
     
     Set tSC = $SYSTEM.Security.Audit("RESTAPI","Request", "RESTAPI","URL: "_pUrl_". Method: "_pMethod_".","REST API request")
-  
-    // Set the return type according to the Accept type in the request. Default is application/json.
-    IF ('..AcceptsContentType(..#CONTENTTYPEJSON)) {
-      SET tSC = ..ReportHttpStatusCode(..#HTTP406NOTACCEPTABLE), pContinue=0
-      QUIT 
-        } ELSE {   
-      // This always returns json
-      SET %response.ContentType=..#CONTENTTYPEJSON
-        }
-        
-        
-        // read request object into %DynamicObject format
-    IF ((pMethod'="POST") && (pMethod'="PUT")) || (%request.Content="") {
-      SET %request.Content = {}
-    } ELSE {
-      IF '$isobject(%request.Content) {
-        SET tContent = %request.Content
-      } ELSE {
-        SET tContent = ""
-        WHILE '%request.Content.AtEnd {
-          SET tContent = tContent_%request.Content.Read()
-        }
-      }
-      IF (tContent="") {
-        SET %request.Content = {}
-      } ELSE {
-        SET tContent = $zconvert(tContent, "I", "UTF8")
-        SET %request.Content = ##class(%Library.DynamicObject).%FromJSON(tContent)
-      }
-    }
-        
+      
   } CATCH ex {
     SET tSC = ex.AsStatus()
   }
-  QUIT ##class(%iKnow.REST.Base).%ErrorHandler(tSC, .pContinue)
+  Return tSC
 }
 
 ClassMethod %ProcessResult(pStatus As %Status = {$$$OK}, pResult As %DynamicObject = "") As %Status [ Internal ]

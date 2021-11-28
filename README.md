@@ -3,13 +3,6 @@ This is a ObjectScript Application to audit API methods requests.
 Can be developed with Docker and VSCode,
 can be deployed as ZPM module.
 
-## Prerequisites
-Make sure you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Docker desktop](https://www.docker.com/products/docker-desktop) installed.
-
-## Installation with ZPM
-
-zpm:USER>install iris-api-audit-mediator
-
 ## Installation for development
 
 Clone/git pull the repo into any local directory e.g. like it is shown below (here I show all the examples related to this repository, but I assume you have your own derived from the template):
@@ -24,54 +17,41 @@ Open the terminal in this directory and run:
 $ docker-compose up -d --build
 ```
 
+## Installation with ZPM
 
-## How to Work With it
+zpm:USER>install iris-api-audit-mediator
 
-This template creates /crud REST web-application on IRIS which implements 4 types of communication: GET, POST, PUT and DELETE aka CRUD operations and custom XDATA sentences to enforce authorization rules.
-These interface works with a sample persistent class Sample.Person.
+## How it Works
 
-Open http://localhost:52773/swagger-ui/index.html to test the REST API
-
-# Testing GET requests
-
-To test GET you need to have some data. You can create it with POST request (see below), or you can create some fake testing data. to do that open IRIS terminal or web terminal on /localhost:52773/terminal/  and call:
-
+1. Clone the project 
 ```
-USER>do ##class(Sample.Person).AddTestData(10)
-```
-This will create 10 random records in Sample.Person class.
-
-
-You can get swagger Open API 2.0 documentation on:
-```
-localhost:yourport/_spec
+$ git clone git@github.com:yurimarx/iris-api-audit-mediator.git
 ```
 
-This REST API exposes two GET requests: all the data and one record.
-To get all the data in JSON call:
-
+2. Build and up the project source code
 ```
-localhost:52773/crud/persons/all
+$ docker-compose up -d --build
 ```
 
-To the audit work, do:
+3. Go to Management Portal -> System Administration -> Security -> Auditing -> Configure User Events
+4. Press button Create New Event
+5. Set Event Source: RESTAPI 
+6. Set Event Type: Request 
+7. Set Event Name: RESTAPI
+8. Press Save
+9. Populate yout Person app with data, call the endpoint http://localhost:52773/crud/persons/populate
+10. Now, call http://localhost:52773/crud/persons/all, or any other endpoint
+11. This request will be registered into Audit database
+12. Now Go to Management Portal -> System Administration -> Security -> Auditing -> View Auditing Database
+13. Looking for rows with Event Source RESTAPI and Event Type Request and click Detail to see audit record details.
+14. Enjoy!
 
-1. Go to Management Portal -> System Administration -> Security -> Auditing -> Configure User Events
-2. Press button Create New Event
-3. Event Source: RESTAPI    Event Type: Request Event Name: RESTAPI
-4. Press Save
 
+# Future features
 
-## What's insde the repo
+1. Config custom audit messages
 
-# Dockerfile
+# Thanks to:
 
-The simplest dockerfile to start IRIS and load ObjectScript from /src/cls folder
-Use the related docker-compose.yml to easily setup additional parametes like port number and where you map keys and host folders.
-
-# .vscode/settings.json
-
-Settings file to let you immedietly code in VSCode with [VSCode ObjectScript plugin](https://marketplace.visualstudio.com/items?itemName=daimor.vscode-objectscript)) 
-
-# .vscode/launch.json
-Config file if you want to debug with VSCode ObjectScript
+1. Robert Cemper: beta tester
+2. Evgeny Shvarov: iris-rest-api-template was the base to this app

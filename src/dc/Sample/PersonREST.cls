@@ -8,6 +8,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 <Routes>
 <!-- Server Info -->
 <Route Url="/" Method="GET" Call="GetInfo" Cors="true"/>
+<!-- Populate Person class -->
+<Route Url="/persons/populate" Method="GET" Call="Populate"/>
 <!-- Get all records of Person class -->
 <Route Url="/persons/all" Method="GET" Call="GetAllPersons"/>
 <!-- Swagger specs -->
@@ -20,6 +22,7 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 <Route Url="/persons/:id" Method="DELETE" Call="DeletePerson"/>
 <!-- Create a person-->
 <Route Url="/persons/" Method="POST" Call="CreatePerson"/>
+
 
 </Routes>
 }
@@ -129,6 +132,27 @@ ClassMethod DeletePerson(id As %Integer) As %Status
     Set %response.Status = 200
 
     Set %response.ContentType = ..#CONTENTTYPEJSON
+
+    Quit tSC
+}
+
+/// Populate the with 10 persons
+ClassMethod Populate() As %Status
+{
+	#dim tSC As %Status = $$$OK
+    #dim e As %Exception.AbstractException
+
+
+    #; Set the response header to plain text
+    Set %response.ContentType = ..#CONTENTTYPEJSON
+
+    Do ##class(dc.Sample.Person).AddTestData(10)
+
+    Set result = {}
+
+    Set result.message = "Populated" 
+    
+    Write result.%ToJSON()
 
     Quit tSC
 }
