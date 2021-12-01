@@ -33,18 +33,22 @@ $ git clone git@github.com:yurimarx/iris-api-audit-mediator.git
 $ docker-compose up -d --build
 ```
 
-3. Go to Management Portal -> System Administration -> Security -> Auditing -> Configure User Events
-4. Press button Create New Event
-5. Set Event Source: RESTAPI 
-6. Set Event Type: Request 
-7. Set Event Name: RESTAPI
-8. Press Save
-9. Populate yout Person app with data, call the endpoint http://localhost:52773/crud/persons/populate
-10. Now, call http://localhost:52773/crud/persons/all, or any other endpoint
-11. This request will be registered into Audit database
-12. Now Go to Management Portal -> System Administration -> Security -> Auditing -> View Auditing Database
-13. Looking for rows with Event Source RESTAPI and Event Type Request and click Detail to see audit record details.
-14. Enjoy!
+3. My project create the User Defined Audit Event on build into iris.script file, with the command: 
+```
+Do ##class(Security.Events).Create("RESTAPI","Request","RESTAPI","REST API Requests")
+```
+4. Go to Management Portal -> System Administration -> Security -> Auditing -> Configure User Events
+5. See my event created, with: 
+6. Set Event Source: RESTAPI 
+7. Set Event Type: Request 
+8. Set Event Name: RESTAPI
+9. In this case is not necessary, but if you need create other audit events with other types and names, use the button Create New Event
+10. Populate your Person app with data, call the endpoint http://localhost:52773/crud/persons/populate
+11. Now, call http://localhost:52773/crud/persons/all, or any other endpoint
+12. This request will be registered into Audit database
+13. Now Go to Management Portal -> System Administration -> Security -> Auditing -> View Auditing Database
+14. Looking for rows with Event Source RESTAPI and Event Type Request and click Detail to see audit record details.
+15. Enjoy!
 
 
 # Future features

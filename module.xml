@@ -3,7 +3,7 @@
   <Document name="iris-api-audit-mediator.ZPM">
     <Module>
       <Name>iris-api-audit-mediator</Name>
-      <Version>1.1.0</Version>
+      <Version>1.2.0</Version>
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
       <Resource Name="dc.AuditMediator.PKG"/>
